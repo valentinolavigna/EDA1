@@ -1,3 +1,3 @@
-# template
+# EDA 1
 
-Repositorio a tomar como punto de partida para las prácticas de los alumnos
+- Valentino Lavigna Jara
