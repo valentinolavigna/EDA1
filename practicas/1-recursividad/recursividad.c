@@ -121,17 +121,38 @@ char *agregarSeparadoresRecursivo(char *numero, int indice, int contador) {
 }
 
 char *agregarSeparadorMiles(char *numero){
-    int cantidad=(strlen(numero)-1)/3;//Hago la cuenta de cuantos puntos debo agregar.El strlen(numero) devuelve un int que es la cantidad de elemntos
-    char *n=malloc(strlen(numero)+cantidad+1);//Reservo espacio en la memoria dinamica. Obtengo el tamaño del string con strlen(numero) sumo la cantidad de puntos que tengo que agregar más 1 que es el \0 el fin de linea
+    
     int tamaño=(strlen(numero));//Obtengo el tamaño del string
-    if(tamaño<=3){//Si el número es menor o igual
-        return n;//Retorno el string, retorno n que es un char* que es como esta definida la función(char *agregarSeparadorMiles(char *numero)), n es el comienzo del string
-    }//Retorn el string modificado con los puntos agregados
-    else{
-        strncpy(n, numero, 3);//Destino, cadena de origen y la cantidad de caracteres a copiar. n->es un string | *n->es un caracter. numero->es un string | *numero->es un caracter                                                                                             
-        *n=".";
-        return agregarSeparadorMiles(numero+cantidad);
+
+    //Caso base:
+    if(tamaño<=3){
+        char *n=malloc(tamaño +1);
+        strcpy(n, numero);
+        return n;//Retorno el string sin modificaciones
     }
+        //Calcular primer bloque
+        int cantidad=(tamaño%3==0)?3:(tamaño%3);//Hago la cuenta de cuantos puntos debo agregar
+
+        //Cantidad de puntos necesarios
+        int puntos=(tamaño-1)/3;
+
+        char *n=malloc(tamaño+puntos+1);
+
+        //Copiar primera parte
+        strncpy(n, numero, cantidad);
+        n[cantidad]='\0';
+
+        //Recursión con el resto
+        char *resto=agregarSeparadorMiles(numero+cantidad);
+
+        //Armar resultado
+        strcat(n, ".");
+        strcat(n, resto);
+
+        //Libero la memoria dinamica
+        free(resto);
+        
+        return n;
 }
 
 static void ondaDigitalRecursiva(const char *entrada, int indice, int largo, char *salida, int *posicion) {
