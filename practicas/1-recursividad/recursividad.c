@@ -50,21 +50,23 @@ int terminoSerieDeFibonacci(int n) {
 }
 
 
-bool esDivisiblePor7(int n) {
-    if (n < 0)
-        return esDivisiblePor7(-n);
+static int divisiblePor7Recursivo(int n) {
+    if (n < 70) {
+        return n;
+    }
 
-    if (n == 0 || n == 7)
-        return true;
-
-    if (n < 10)
-        return false;
-
-    int ultimo = n % 10;
+    int ultimaCifra = n % 10;
     int resto = n / 10;
+    return divisiblePor7Recursivo(resto - (ultimaCifra * 2));
+}
 
-    // Aplicar regla
-    return esDivisiblePor7(resto - 2 * ultimo);
+bool esDivisiblePor7(int n) {
+    if (n < 0) {
+        n = -n;
+    }
+
+    int reducido = divisiblePor7Recursivo(n);
+    return (reducido % 7) == 0;
 }
 
 
@@ -73,11 +75,43 @@ int restoRecursivo(int dividendo, int divisor) {
 }
 
 
+static void agregarFragmento(int valor, int **resultado, int *size, int *capacidad) {
+    if (*capacidad == 0) {
+        *capacidad = 8;
+        *resultado = malloc((size_t) *capacidad * sizeof(int));
+    } else if (*size >= *capacidad) {
+        *capacidad *= 2;
+        *resultado = realloc(*resultado, (size_t) *capacidad * sizeof(int));
+    }
 
-void explosionRecursiva(int n, int b, int *result, int *size) {
+    (*resultado)[*size] = valor;
+    (*size)++;
+}
+
+static void explosionRecursiva(int n, int b, int **result, int *size, int *capacidad) {
+    if (n <= b) {
+        agregarFragmento(n, result, size, capacidad);
+        return;
+    }
+
+    int n1 = n / b;
+    int n2 = n - n1;
+
+    explosionRecursiva(n1, b, result, size, capacidad);
+    explosionRecursiva(n2, b, result, size, capacidad);
 }
 
 int *explosion(int n, int b, int *size) {
+    *size = 0;
+    int capacidad = 0;
+    int *resultado = NULL;
+
+    if (b <= 1 || n <= 0) {
+        return resultado;
+    }
+
+    explosionRecursiva(n, b, &resultado, size, &capacidad);
+    return resultado;
 }
 
 char *chinos(unsigned int nivel) {
@@ -98,4 +132,53 @@ char *agregarSeparadorMiles(char *numero){
         *n=".";
         return agregarSeparadorMiles(numero+cantidad);
     }
+}
+
+static void ondaDigitalRecursiva(const char *entrada, int indice, int largo, char *salida, int *posicion) {
+    if (indice >= largo) {
+        return;
+    }
+
+    const char *simbolo = (entrada[indice] == 'H') ? "‾" : "_";
+    size_t largoSimbolo = strlen(simbolo);
+    memcpy(salida + *posicion, simbolo, largoSimbolo);
+    *posicion += (int) largoSimbolo;
+
+    if (indice == largo - 1) {
+        return;
+    }
+
+    if (entrada[indice] == entrada[indice + 1]) {
+        salida[*posicion] = ' ';
+        (*posicion)++;
+    } else {
+        const char *separador = " | ";
+        size_t largoSeparador = strlen(separador);
+        memcpy(salida + *posicion, separador, largoSeparador);
+        *posicion += (int) largoSeparador;
+    }
+
+    ondaDigitalRecursiva(entrada, indice + 1, largo, salida, posicion);
+}
+
+char *ondaDigital(char *onda) {
+    if (onda == NULL) {
+        return NULL;
+    }
+
+    int largo = (int) strlen(onda);
+    if (largo == 0) {
+        char *vacio = malloc(1);
+        vacio[0] = '\0';
+        return vacio;
+    }
+
+    size_t capacidad = ((size_t) largo * 5) + 1;
+    char *resultado = malloc(capacidad);
+    int posicion = 0;
+
+    ondaDigitalRecursiva(onda, 0, largo, resultado, &posicion);
+    resultado[posicion] = '\0';
+
+    return resultado;
 }
