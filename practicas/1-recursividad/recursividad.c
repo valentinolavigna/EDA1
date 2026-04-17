@@ -86,5 +86,16 @@ char *chinos(unsigned int nivel) {
 char *agregarSeparadoresRecursivo(char *numero, int indice, int contador) {
 }
 
-char *agregarSeparadorMiles(char *numero) {
+char *agregarSeparadorMiles(char *numero){
+    int cantidad=(strlen(numero)-1)/3;//Hago la cuenta de cuantos puntos debo agregar.El strlen(numero) devuelve un int que es la cantidad de elemntos
+    char *n=malloc(strlen(numero)+cantidad+1);//Reservo espacio en la memoria dinamica. Obtengo el tamaño del string con strlen(numero) sumo la cantidad de puntos que tengo que agregar más 1 que es el \0 el fin de linea
+    int tamaño=(strlen(numero));//Obtengo el tamaño del string
+    if(tamaño<=3){//Si el número es menor o igual
+        return n;//Retorno el string, retorno n que es un char* que es como esta definida la función(char *agregarSeparadorMiles(char *numero)), n es el comienzo del string
+    }//Retorn el string modificado con los puntos agregados
+    else{
+        strncpy(n, numero, 3);//Destino, cadena de origen y la cantidad de caracteres a copiar. n->es un string | *n->es un caracter. numero->es un string | *numero->es un caracter                                                                                             
+        *n=".";
+        return agregarSeparadorMiles(numero+cantidad);
+    }
 }
