@@ -114,8 +114,29 @@ int *explosion(int n, int b, int *size) {
     return resultado;
 }
 
-char *chinos(unsigned int nivel) {
-}
+ char* chinos(unsigned int nivel){
+    //Caso base
+    if (nivel==1){
+        char *base=malloc(6);//"(-.-)" + '\0'
+        strcpy(base, "(-.-)");
+        return base;
+    }
+
+    //Llamada recursiva:
+    char *interno=chinos(nivel-1);
+
+    int tam=strlen(interno)+6+1;
+
+    char *resultado=malloc(tam);
+
+    strcpy(resultado, "(-.");//parte izquierda fija
+    strcat(resultado, interno);//parte recursiva 
+    strcat(resultado, ".-)");//parte derecha
+
+    free(interno);
+
+    return resultado;
+ }
 
 char *agregarSeparadoresRecursivo(char *numero, int indice, int contador) {
 }
