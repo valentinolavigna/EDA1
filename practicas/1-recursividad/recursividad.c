@@ -14,18 +14,26 @@ bool esCapicua(int numero) {
     return numero == invertir(numero, 0);
 }
 
+static bool esPalindromoRecursivo(const char *inicio, const char *fin) {
+    if (inicio >= fin) {
+        return true;
+    }
+
+    if (*inicio != *fin) {
+        return false;
+    }
+
+    return esPalindromoRecursivo(inicio + 1, fin - 1);
+}
 
 bool esPalindromo(char *palabra) {
     int largo = strlen(palabra);
 
-    if (largo <= 1)
+    if (largo <= 1) {
         return true;
+    }
 
-    if (palabra[0] != palabra[largo - 1])
-        return false;
-
-    palabra[largo - 1] = '\0';
-    return esPalindromo(palabra + 1);
+    return esPalindromoRecursivo(palabra, palabra + largo - 1);
 }
 
 
@@ -71,7 +79,23 @@ bool esDivisiblePor7(int n) {
 
 
 int restoRecursivo(int dividendo, int divisor) {
-    
+    if (divisor == 0) {
+        return 0;
+    }
+
+    if (divisor < 0) {
+        divisor = -divisor;
+    }
+
+    if (dividendo < 0) {
+        return -restoRecursivo(-dividendo, divisor);
+    }
+
+    if (dividendo < divisor) {
+        return dividendo;
+    }
+
+    return restoRecursivo(dividendo - divisor, divisor);
 }
 
 
