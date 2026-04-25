@@ -2,7 +2,14 @@ project(Recursividad)
 
 enable_testing()
 
-add_library(recursividad recursividad.c)
+add_library(recursividad recursividad.c ruta_mina.c)
+
+# Copiar los archivos de datos
+file(GLOB DATA_FILES "archivos/*.txt")
+foreach (DATA_FILE ${DATA_FILES})
+    get_filename_component(FILE_NAME ${DATA_FILE} NAME)
+    configure_file(${DATA_FILE} archivos/${FILE_NAME} COPYONLY)
+endforeach ()
 
 # Buscar todos los archivos de prueba que comiencen con "test_" en la carpeta "tests"
 file(GLOB TEST_SOURCES "tests/test_*.c")
